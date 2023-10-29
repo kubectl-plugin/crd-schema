@@ -1,0 +1,52 @@
+{
+  "properties": {
+    "spec": {
+      "properties": {
+        "domains": {
+          "items": {
+            "maxLength": 63,
+            "pattern": "^(([a-z0-9]+|[a-z0-9][-a-z0-9]*[a-z0-9])\\.)+[a-z][-a-z0-9]*[a-z0-9]$",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "status": {
+      "properties": {
+        "certificateName": {
+          "type": "string"
+        },
+        "certificateStatus": {
+          "type": "string"
+        },
+        "domainStatus": {
+          "items": {
+            "properties": {
+              "domain": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "domain",
+              "status"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "expireTime": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
