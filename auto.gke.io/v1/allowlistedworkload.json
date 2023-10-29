@@ -1,0 +1,161 @@
+{
+  "properties": {
+    "spec": {
+      "properties": {
+        "containers": {
+          "items": {
+            "properties": {
+              "args": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "command": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "exemptions": {
+                "items": {
+                  "properties": {
+                    "constraintName": {
+                      "type": "string"
+                    },
+                    "constraintParameters": {
+                      "type": "object",
+                      "x-kubernetes-preserve-unknown-fields": true
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "image": {
+                "type": "string"
+              },
+              "lifecycle": {
+                "properties": {
+                  "postStart": {
+                    "properties": {
+                      "exec": {
+                        "properties": {
+                          "command": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "preStop": {
+                    "properties": {
+                      "exec": {
+                        "properties": {
+                          "command": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              },
+              "livenessProbe": {
+                "properties": {
+                  "exec": {
+                    "properties": {
+                      "command": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              },
+              "podAnnotations": {
+                "items": {
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "podLabels": {
+                "items": {
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "readinessProbe": {
+                "properties": {
+                  "exec": {
+                    "properties": {
+                      "command": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              },
+              "startupProbe": {
+                "properties": {
+                  "exec": {
+                    "properties": {
+                      "command": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
