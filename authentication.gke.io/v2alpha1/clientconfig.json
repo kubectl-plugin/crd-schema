@@ -1,0 +1,549 @@
+{
+  "description": "ClientConfig is the Schema for the clientconfigs API.",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "ClientConfigSpec defines the desired state of ClientConfig.",
+      "properties": {
+        "authentication": {
+          "description": "List of all configured auth methods available in the cluster.",
+          "items": {
+            "description": "AuthMethod holds an authentication method config with an associated identifier. Only one authentication method can be set per AuthMethod with a name.",
+            "properties": {
+              "aws": {
+                "description": "AWS specific configuration.",
+                "properties": {
+                  "region": {
+                    "description": "Flag to specify the region of AWS STS endpoint.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "region"
+                ],
+                "type": "object"
+              },
+              "azureAD": {
+                "description": "Azure AD authentication specific configuration.",
+                "properties": {
+                  "clientID": {
+                    "description": "ClientID is the ID for client application registered with Azure AD.",
+                    "type": "string"
+                  },
+                  "clientSecret": {
+                    "description": "ClientSecret is the shared secret between the client application and Azure AD.",
+                    "type": "string"
+                  },
+                  "kubectlRedirectURI": {
+                    "description": "KubectlRedirectURI is the URI to redirect users authenticating to Azure AD with the kubectl plugin.",
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "tenant": {
+                    "description": "Tenant is the kind of Azure AD account to be authenticated. Supported values are \u003ctenant UUID\u003e or \u003ctenant name\u003e for accounts belonging to a specific tenant. The \u003ctenant name\u003e is also called the Primary Domain. For details on how to find these values, see https://docs.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-microsoft-azure-ad-tenant-id-and-primary-domain-name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "clientID",
+                  "clientSecret",
+                  "tenant"
+                ],
+                "type": "object"
+              },
+              "basic": {
+                "description": "Basic authentication information.",
+                "properties": {
+                  "enabled": {
+                    "description": "Flag to indicate if basic authentication is enabled.",
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              },
+              "google": {
+                "description": "Google authentication specific configuration.",
+                "properties": {
+                  "audiences": {
+                    "description": "Audiences contain a list of identifiers for the targeting cluster. This is used to explicitly match the audience value in the incoming JWT token to narrow down the authentication scope.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "cloudIdentityLdapSecret": {
+                    "description": "CloudIdentityLdapSecret contains the TLS credential to access the Google Cloud Identity LDAP service.",
+                    "properties": {
+                      "name": {
+                        "description": "Name of the secret which stores the TLS key and certificate of the Google Cloud Identity LDAP service account.",
+                        "type": "string"
+                      },
+                      "namespace": {
+                        "description": "Namespace defines the namespace where the secret is deployed.",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "namespace"
+                    ],
+                    "type": "object"
+                  },
+                  "group": {
+                    "description": "Group contains the properties for locating groups in the directory.",
+                    "properties": {
+                      "filter": {
+                        "description": "Optional filter to be used when searching for groups a user belongs to. This can be used to explicitly match only certain groups in order to reduce the amount of groups returned for each user. This defaults to \"(objectClass=*)\".",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              },
+              "ldap": {
+                "description": "LDAP specific configuration.",
+                "properties": {
+                  "certificateAuthorityData": {
+                    "description": "CertificateAuthorityData contains a Base64 encoded, PEM formatted certificate authority certificate for the LDAP server. This must be provided for the \"ldaps\" and \"startTLS\"  connections.",
+                    "type": "string"
+                  },
+                  "connectionType": {
+                    "description": "LDAP connection type to use when connecting to the LDAP server. Defaults to \"startTLS\". Using \"insecure\" mode is not recommended because all communication with the LDAP server, including usernames and passwords will be sent is plaintext.",
+                    "enum": [
+                      "insecure",
+                      "startTLS",
+                      "ldaps"
+                    ],
+                    "type": "string"
+                  },
+                  "group": {
+                    "description": "Group contains the properties for locating and authenticating groups in the directory.",
+                    "properties": {
+                      "baseDN": {
+                        "description": "BaseDN is the location of the subtree in the LDAP directory to search for group entries.",
+                        "type": "string"
+                      },
+                      "filter": {
+                        "description": "Optional filter to be used when searching for groups a user belongs to. This can be used to explicitly match only certain groups in order to reduce the amount of groups returned for each user. This defaults to \"(objectClass=Group)\".",
+                        "type": "string"
+                      },
+                      "identifierAttribute": {
+                        "description": "IdentifierAttribute is used as the identifying name of each group a user belongs to. For example, if this is set to \"distinguishedName\" then RBACs and other group expectations should be written as full DNs. This defaults to \"distinguishedName\".",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "baseDN"
+                    ],
+                    "type": "object"
+                  },
+                  "host": {
+                    "description": "Hostname or IP of the LDAP server. Port is optional and will default to 389, if unspecified. For example, \"ldap.server.example.com\" or \"10.10.10.10:389\".",
+                    "type": "string"
+                  },
+                  "serviceAccountSecret": {
+                    "description": "ServiceAccountSecret contains the credentials for an LDAP service account used to search for users and groups. This account should only have read-only access privileges to the LDAP server.",
+                    "properties": {
+                      "name": {
+                        "description": "Name of the secret which stores the credential of the LDAP service account.",
+                        "type": "string"
+                      },
+                      "namespace": {
+                        "description": "Namespace of the secret which stores the credential of the LDAP service account.",
+                        "type": "string"
+                      },
+                      "type": {
+                        "description": "Type defines the format of the service account secret in order to support different kinds of secrets. This defaults to \"basic\".",
+                        "enum": [
+                          "basic",
+                          "tls"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "namespace",
+                      "type"
+                    ],
+                    "type": "object"
+                  },
+                  "user": {
+                    "description": "User contains properties for locating and authenticating users in the directory.",
+                    "properties": {
+                      "baseDN": {
+                        "description": "BaseDN is the location of the subtree in the LDAP directory to search for user entries.",
+                        "type": "string"
+                      },
+                      "filter": {
+                        "description": "Optional filter to apply when searching for the user. This can be used to further restrict the user accounts which are allowed to login. This defaults to \"(objectClass=User)\".",
+                        "type": "string"
+                      },
+                      "identifierAttribute": {
+                        "description": "IdentifierAttribute determines which attribute to use as the user's identity after they are authenticated. This is distinct from the loginAttribute field to allow users to login with a username, but then have their actual identifier be an email address or full Distinguished Name (DN). For example,  setting loginAttribute to \"sAMAccountName\" and identifierAttribute to \"userPrincipleName\" would allow a user to login as \"bsmith\", but actual RBAC policies for the user would be written as \"bsmith@example.com\". Using \"userPrincipleName\" is recommended since this will be unique for each user. This defaults to \"userPrincipleName\".",
+                        "type": "string"
+                      },
+                      "loginAttribute": {
+                        "description": "LoginAttribute is the name of the attribute which matches against the input username. This is used to find the user in the LDAP database e.g. \"(\u003cLoginAttribute\u003e=\u003cusername\u003e)\" and is combined with the optional filter field. This defaults to \"userPrincipleName\".",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "baseDN"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "host",
+                  "serviceAccountSecret",
+                  "user"
+                ],
+                "type": "object"
+              },
+              "name": {
+                "description": "Identifier used to differentiate authentication configs.",
+                "type": "string"
+              },
+              "oidc": {
+                "description": "OIDC specific configuration.",
+                "properties": {
+                  "attributeMapping": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "Optional Common Expression Language (CEL) for mapping user attributes (such as x, y, z) from the identity provider to the web application.",
+                    "type": "object"
+                  },
+                  "certificateAuthorityData": {
+                    "description": "CertificateAuthorityData contains a standard Base64 encoded, PEM formatted certificate authority certificate for OIDC provider.",
+                    "type": "string"
+                  },
+                  "clientAuthParams": {
+                    "description": "Optional ClientAuth params define the way AIS authenticates itself while sending the Token API. Currently used during authorization code flow.",
+                    "properties": {
+                      "method": {
+                        "description": "Type of the ClientAuthentication method. Default method is client_secret_post that sends client_secret in the Token API. Other value supported is private_key_jwt that sends a signed jwt in the Token API. private_key_jwt method requires SigningKey configuration to be valid.",
+                        "type": "string"
+                      },
+                      "signatureAlg": {
+                        "description": "Signature Algorithm used to compute the JWT. Only supported algorithm at this point is RS256.",
+                        "type": "string"
+                      },
+                      "signingKey": {
+                        "description": "SigningKey denotes the parameters required to retrieve the key used to sign the JWT. Key is stored as a kubernetes secret.",
+                        "properties": {
+                          "kid": {
+                            "description": "kid is the unique identifier that represents the signing key. Identity Provider looks up public key corresponding to the kid in order to verify payload.",
+                            "type": "string"
+                          },
+                          "name": {
+                            "description": "Name of the secret which stores the SigningKey.",
+                            "type": "string"
+                          },
+                          "namespace": {
+                            "description": "Namespace of the secret which stores the SigningKey.",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "namespace"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "clientID": {
+                    "description": "ClientID is an ID for OIDC client application.",
+                    "type": "string"
+                  },
+                  "clientSecret": {
+                    "description": "ClientSecret is the shared secret between OIDC client application and OIDC provider.",
+                    "type": "string"
+                  },
+                  "cloudConsoleRedirectURI": {
+                    "description": "CloudConsoleRedirectURI is the URI to redirect users going through the OAuth flow using cloud console.",
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "deployCloudConsoleProxy": {
+                    "description": "Flag to denote if HTTP reverse proxy is used for connecting to authentication provider. This should be set to true when authentication provider is not reachable by Google Cloud Console.",
+                    "type": "boolean"
+                  },
+                  "enableAccessToken": {
+                    "description": "If enabled, Anthos Identity Service can use the identity provider's userinfo endpoint to get groups information. This lets you use security groups for authorization if you have a provider (such as Okta) that provides group claims from this endpoint. Defaults to false.",
+                    "type": "boolean"
+                  },
+                  "encryptedTokens": {
+                    "description": "Optional configuration for the OIDC encrypted tokens feature.",
+                    "properties": {
+                      "decryptionKeys": {
+                        "description": "Kubernetes secret where the token decryption keys are stored.",
+                        "items": {
+                          "properties": {
+                            "kid": {
+                              "description": "kid is the unique key identifier that represents a decryption key.",
+                              "type": "string"
+                            },
+                            "name": {
+                              "description": "Name of the secret that stores the decryption keys.",
+                              "type": "string"
+                            },
+                            "namespace": {
+                              "description": "Namespace of the secret that stores the decryption keys.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "namespace",
+                            "kid"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "enabled": {
+                        "description": "Specifies if OIDC tokens must be decrypted before being parsed. The token decryption feature is only enabled when this is set to true.",
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "decryptionKeys"
+                    ],
+                    "type": "object"
+                  },
+                  "extraParams": {
+                    "description": "Comma-separated list of key-value pairs that will be query-encoded and sent with the authentication endpoint request.",
+                    "type": "string"
+                  },
+                  "groupPrefix": {
+                    "description": "Prefix to prepend to the group name.",
+                    "type": "string"
+                  },
+                  "groupsClaim": {
+                    "description": "Name of the claim in the OIDC ID Token that holds the user's groups information.",
+                    "type": "string"
+                  },
+                  "issuerURI": {
+                    "description": "URI for the OIDC provider. This URI is the prefix of \"/.well-known/openid-configuration\". For example, if the IDP's well-known configuration endpoint is \"https://{oauth-provider-hostname}/.well-known/openid-configuration\", then the Issuer URI is \"https://{oauth-provider-hostname}\".",
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "kubectlRedirectURI": {
+                    "description": "KubectlRedirectURI is the URI to redirect users authenticating to an OIDC provider with the kubectl plugin.",
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "description": "Comma-separated list of identifiers used to specify what access privileges are being requested in addition to \"openid\" scope.",
+                    "type": "string"
+                  },
+                  "userClaim": {
+                    "description": "Name of the claim in the OIDC ID Token that holds the username. If this is missing from the ID Token, authentication will fail.",
+                    "type": "string"
+                  },
+                  "userPrefix": {
+                    "description": "Prefix to prepend to the user name.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "clientID",
+                  "issuerURI",
+                  "userClaim"
+                ],
+                "type": "object"
+              },
+              "proxy": {
+                "description": "Proxy server to use for the auth method, if applicable. For example: http://user:password@10.10.10.10:8888.",
+                "type": "string"
+              },
+              "saml": {
+                "description": "SAML specific configuration.",
+                "properties": {
+                  "attributeMapping": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "Optional Common Expression Language (CEL) for mapping user attributes (such as x, y, z) from the identity provider to the web application.",
+                    "type": "object"
+                  },
+                  "encryptedAssertions": {
+                    "description": "Optional configuration for the SAML encrypted assertions feature.",
+                    "properties": {
+                      "decryptionKeys": {
+                        "description": "Kubernetes secret where the Assertion encryption certificate, and the assertion decryption key are stored. This secret needs to be of type TLS (see: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets).",
+                        "items": {
+                          "properties": {
+                            "name": {
+                              "description": "Kubernetes Name of the secret.",
+                              "type": "string"
+                            },
+                            "namespace": {
+                              "description": "Kubernetes Namespace of the secret.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "namespace"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "enabled": {
+                        "description": "Specifies if SAML assertions must be decrypted before being parsed. The assertion decryption feature is only enabled when this is set to true.",
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "decryptionKeys"
+                    ],
+                    "type": "object"
+                  },
+                  "groupPrefix": {
+                    "description": "Optional prefix to prepend to each group name.",
+                    "type": "string"
+                  },
+                  "groupsAttribute": {
+                    "description": "Name of the attribute in the SAML response that holds the user's groups.",
+                    "type": "string"
+                  },
+                  "idpCertificateDataList": {
+                    "description": "The IDP certificates that will be used to verify the SAML response. These certificates should be standard Base64 encoded, and PEM formatted. Only a maximum of 2 certificates are supported to facilitate IDP certificate rotation.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "maxItems": 2,
+                    "type": "array"
+                  },
+                  "idpEntityID": {
+                    "description": "The SAML entity ID for the SAML provider, specified in a URI format. For example: https://www.idp.com/saml.",
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "idpSingleSignOnURI": {
+                    "description": "The URI to the SAML provider's SSO endpoint. For example: https://www.idp.com/saml/sso.",
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "signedRequests": {
+                    "description": "Optional configuration for the SAML authentication request signing feature.",
+                    "properties": {
+                      "enabled": {
+                        "description": "Specifies if SAML authentication request must be signed. The signed request feature is only enabled when this is set to true.",
+                        "type": "boolean"
+                      },
+                      "signingKey": {
+                        "description": "Kubernetes secret where the SAML request signing certificate key pair is stored. This secret needs to be of type TLS. (see: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets).",
+                        "properties": {
+                          "name": {
+                            "description": "Kubernetes Name of the secret.",
+                            "type": "string"
+                          },
+                          "namespace": {
+                            "description": "Kubernetes Namespace of the secret.",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "namespace"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "signingKey"
+                    ],
+                    "type": "object"
+                  },
+                  "userAttribute": {
+                    "description": "Name of the attribute in the SAML response that holds the username. If unspecified, the username will be read from the \u003cNameID\u003e element of the assertion in SAML response. If specified but the attribute is missing in the SAML response, authentication will fail.",
+                    "type": "string"
+                  },
+                  "userPrefix": {
+                    "description": "Optional prefix to prepend to the user name.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "idpCertificateDataList",
+                  "idpEntityID",
+                  "idpSingleSignOnURI"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "certificateAuthorityData": {
+          "description": "CertificateAuthorityData contains a Base64 encoded, PEM formatted certificate authority certificate for APIServer.",
+          "format": "byte",
+          "type": "string"
+        },
+        "internalServer": {
+          "description": "InternalServer is the internal accessible DNS name of envoy service in Kubernetes. If AIS is running in webhook mode, the api server's DNS name will be put here (https://hostname:port).",
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of the cluster.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "preferredAuthentication": {
+          "description": "Name of the preferred authentication method configured in the cluster.",
+          "type": "string"
+        },
+        "server": {
+          "description": "Server is the address of the kubernetes cluster (https://hostname:port).",
+          "format": "uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "status": {
+      "description": "ClientConfigStatus defines the observed state of ClientConfig.",
+      "properties": {
+        "anthosIdentityService": {
+          "description": "AnthosIdentityService contains a message which records the status of applying the current configuration set.",
+          "type": "string"
+        },
+        "proxy": {
+          "description": "Proxy contains a status message of what proxy configuration is running.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
