@@ -1,0 +1,33 @@
+{
+  "description": "ProtectedApplicationGroup is the Schema for the protectedapplicationgroups API.",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "ProtectedApplicationGroupSpec defines the desired state of ProtectedApplicationGroup.",
+      "properties": {
+        "applications": {
+          "description": "Applications is an ordered list of ProtectedApplications that required backup consistency between each other. The ordering of these applications determines the quiesce/unquiesce orders: The first app will quiesce first and un-quiesce last. \n For example: the order of execution 1)     quiesce app_1 2)     quiesce app_2 ....... N)     quiesce app_N \n [Volume Backup/Snapshot for all app_1..app_N] \n N+1)   un-quiesce app_N N+2)   un-quiesce app_N-1 ....... 2N-1)  un-quiesce app_2 2N)    un-quiesce app_1 \n All ProtectedApplication referred here must be in the same namespace as this group.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "applications"
+      ],
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
