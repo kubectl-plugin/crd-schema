@@ -1,0 +1,54 @@
+{
+  "description": "ReleaseRollback is the Schema for the releaserollbacks API",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "ReleaseRollbackSpec defines the desired state of ReleaseRollback",
+      "properties": {
+        "releaseTrackName": {
+          "description": "`releaseTrackName` is the name of the ReleaseTrack object to auto-rollback on failure.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "rollbackPolicy": {
+          "description": "`rollbackPolicy` specifies the criteria when a ReleaseTrack should be auto-rolled back. Can be \"OnceOnFailure\".",
+          "enum": [
+            "OnceOnFailure"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "releaseTrackName",
+        "rollbackPolicy"
+      ],
+      "type": "object"
+    },
+    "status": {
+      "description": "ReleaseRollbackStatus defines the observed state of ReleaseRollback",
+      "properties": {
+        "lastRollbackTime": {
+          "description": "`lastRollbackTime` is the RFC 3339 time when the ReleaseTrack that this ReleaseRollback refers to is last rolled back.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "lastRollbackTo": {
+          "description": "`lastRollbackTo` is the name of the ControllerRevision that's last used to roll back the ReleaseTrack that this ReleaseRollback refers to.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
