@@ -20,7 +20,13 @@
           "maxLength": 253,
           "minLength": 1,
           "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[A-Za-z0-9\\/\\-._~%!$\u0026'()*+,;=:]+$",
-          "type": "string"
+          "type": "string",
+          "x-kubernetes-validations": [
+            {
+              "message": "Value is immutable",
+              "rule": "self == oldSelf"
+            }
+          ]
         },
         "description": {
           "description": "Description helps describe a GatewayClass with more details.",
@@ -82,7 +88,7 @@
           }
         ]
       },
-      "description": "Status defines the current state of GatewayClass.",
+      "description": "Status defines the current state of GatewayClass. \n Implementations MUST populate status on all GatewayClass resources which specify their controller name.",
       "properties": {
         "conditions": {
           "default": [
