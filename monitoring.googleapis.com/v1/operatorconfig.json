@@ -49,7 +49,7 @@
           "description": "Filter limits which metric data is sent to Cloud Monitoring.",
           "properties": {
             "matchOneOf": {
-              "description": "A list Prometheus time series matchers. Every time series must match at least one of the matchers to be exported. This field can be used equivalently to the match[] parameter of the Prometheus federation endpoint to selectively export data. Example: `[\"{job!='foobar'}\", \"{__name__!~'container_foo.*|container_bar.*'}\"]`",
+              "description": "A list of Prometheus time series matchers. Every time series must match at least one of the matchers to be exported. This field can be used equivalently to the match[] parameter of the Prometheus federation endpoint to selectively export data. Example: `[\"{job!='foobar'}\", \"{__name__!~'container_foo.*|container_bar.*'}\"]`",
               "items": {
                 "type": "string"
               },
@@ -138,6 +138,10 @@
           ],
           "type": "object",
           "x-kubernetes-map-type": "atomic"
+        },
+        "externalURL": {
+          "description": "ExternalURL is the URL under which Alertmanager is externally reachable (for example, if Alertmanager is served via a reverse proxy). Used for generating relative and absolute links back to Alertmanager itself. If the URL has a path portion, it will be used to prefix all HTTP endpoints served by Alertmanager. If omitted, relevant URL components will be derived automatically.",
+          "type": "string"
         }
       },
       "type": "object"
@@ -146,7 +150,7 @@
       "type": "object"
     },
     "rules": {
-      "description": "Rules specifies how the operator configures and deployes rule-evaluator.",
+      "description": "Rules specifies how the operator configures and deploys rule-evaluator.",
       "properties": {
         "alerting": {
           "description": "Alerting contains how the rule-evaluator configures alerting.",
@@ -352,6 +356,14 @@
                         ],
                         "type": "object",
                         "x-kubernetes-map-type": "atomic"
+                      },
+                      "maxVersion": {
+                        "description": "Maximum TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3). If unset, Prometheus will use Go default minimum version, which is TLS 1.2. See MinVersion in https://pkg.go.dev/crypto/tls#Config.",
+                        "type": "string"
+                      },
+                      "minVersion": {
+                        "description": "Minimum TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3). If unset, Prometheus will use Go default minimum version, which is TLS 1.2. See MinVersion in https://pkg.go.dev/crypto/tls#Config.",
+                        "type": "string"
                       },
                       "serverName": {
                         "description": "Used to verify the hostname for the targets.",
