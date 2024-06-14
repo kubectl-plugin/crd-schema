@@ -21,6 +21,10 @@
             "allowGlobalAccess": {
               "type": "boolean"
             },
+            "region": {
+              "description": "Region allows to specify load balancer's region for Multi-cluster Gateway.",
+              "type": "string"
+            },
             "sslPolicy": {
               "type": "string"
             }

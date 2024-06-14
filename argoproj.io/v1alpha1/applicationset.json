@@ -330,6 +330,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -652,6 +658,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -1219,6 +1231,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -1541,6 +1559,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -2114,6 +2138,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -2436,6 +2466,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -2978,6 +3014,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -3300,6 +3342,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -3876,6 +3924,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -4198,6 +4252,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -4765,6 +4825,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -5087,6 +5153,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -5660,6 +5732,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -5982,6 +6060,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -6524,6 +6608,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -6846,6 +6936,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -7404,6 +7500,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -7726,6 +7828,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -8553,6 +8661,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -8875,6 +8989,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -9696,6 +9816,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -10018,6 +10144,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -10585,6 +10717,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -10907,6 +11045,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -11483,6 +11627,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -11805,6 +11955,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -12372,6 +12528,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -12694,6 +12856,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -13267,6 +13435,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -13589,6 +13763,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -14131,6 +14311,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -14453,6 +14639,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -15011,6 +15203,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -15333,6 +15531,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -16160,6 +16364,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -16482,6 +16692,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -17303,6 +17519,12 @@
                                               },
                                               "type": "object"
                                             },
+                                            "components": {
+                                              "items": {
+                                                "type": "string"
+                                              },
+                                              "type": "array"
+                                            },
                                             "forceCommonAnnotations": {
                                               "type": "boolean"
                                             },
@@ -17625,6 +17847,12 @@
                                                   "type": "string"
                                                 },
                                                 "type": "object"
+                                              },
+                                              "components": {
+                                                "items": {
+                                                  "type": "string"
+                                                },
+                                                "type": "array"
                                               },
                                               "forceCommonAnnotations": {
                                                 "type": "boolean"
@@ -18198,6 +18426,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -18520,6 +18754,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -19073,6 +19313,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -19395,6 +19641,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -20222,6 +20474,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -20544,6 +20802,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -21365,6 +21629,12 @@
                                     },
                                     "type": "object"
                                   },
+                                  "components": {
+                                    "items": {
+                                      "type": "string"
+                                    },
+                                    "type": "array"
+                                  },
                                   "forceCommonAnnotations": {
                                     "type": "boolean"
                                   },
@@ -21687,6 +21957,12 @@
                                         "type": "string"
                                       },
                                       "type": "object"
+                                    },
+                                    "components": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
                                     },
                                     "forceCommonAnnotations": {
                                       "type": "boolean"
@@ -22372,6 +22648,12 @@
                           },
                           "type": "object"
                         },
+                        "components": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
                         "forceCommonAnnotations": {
                           "type": "boolean"
                         },
@@ -22695,6 +22977,12 @@
                             },
                             "type": "object"
                           },
+                          "components": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
                           "forceCommonAnnotations": {
                             "type": "boolean"
                           },
@@ -22945,6 +23233,9 @@
             "spec"
           ],
           "type": "object"
+        },
+        "templatePatch": {
+          "type": "string"
         }
       },
       "required": [

@@ -44,6 +44,14 @@
                     "description": "ClientSecret is the shared secret between the client application and Azure AD.",
                     "type": "string"
                   },
+                  "groupFormat": {
+                    "description": "Format of the groups that the client wants for auth.",
+                    "enum": [
+                      "name",
+                      "id"
+                    ],
+                    "type": "string"
+                  },
                   "kubectlRedirectURI": {
                     "description": "KubectlRedirectURI is the URI to redirect users authenticating to Azure AD with the kubectl plugin.",
                     "format": "uri",
@@ -51,6 +59,10 @@
                   },
                   "tenant": {
                     "description": "Tenant is the kind of Azure AD account to be authenticated. Supported values are \u003ctenant UUID\u003e or \u003ctenant name\u003e for accounts belonging to a specific tenant. The \u003ctenant name\u003e is also called the Primary Domain. For details on how to find these values, see https://docs.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-microsoft-azure-ad-tenant-id-and-primary-domain-name",
+                    "type": "string"
+                  },
+                  "userClaim": {
+                    "description": "Name of the claim in the AzureAD ID Token that holds the username.",
                     "type": "string"
                   }
                 },
@@ -224,7 +236,7 @@
                     "additionalProperties": {
                       "type": "string"
                     },
-                    "description": "Optional Common Expression Language (CEL) for mapping user attributes (such as x, y, z) from the identity provider to the web application.",
+                    "description": "Optional Common Expression Language (CEL) for mapping user attributes from the identity provider to the web application.",
                     "type": "object"
                   },
                   "certificateAuthorityData": {
@@ -235,7 +247,7 @@
                     "description": "Optional ClientAuth params define the way AIS authenticates itself while sending the Token API. Currently used during authorization code flow.",
                     "properties": {
                       "method": {
-                        "description": "Type of the ClientAuthentication method. Default method is client_secret_post that sends client_secret in the Token API. Other value supported is private_key_jwt that sends a signed jwt in the Token API. private_key_jwt method requires SigningKey configuration to be valid.",
+                        "description": "Type of the ClientAuthentication method. Default method is client_secret_post that sends client_secret in the Token API. Other method supported is private_key_jwt that sends a signed jwt in the Token API. private_key_jwt method requires SigningKey configuration to be valid.",
                         "type": "string"
                       },
                       "signatureAlg": {
@@ -285,46 +297,47 @@
                     "type": "boolean"
                   },
                   "enableAccessToken": {
-                    "description": "If enabled, Anthos Identity Service can use the identity provider's userinfo endpoint to get groups information. This lets you use security groups for authorization if you have a provider (such as Okta) that provides group claims from this endpoint. Defaults to false.",
+                    "description": "Flag that denotes if the access-token should be included in the request as part of the bearer token by `gcloud anthos auth login` and `kubectl oidc login`. Defaults to false.",
                     "type": "boolean"
                   },
                   "encryptedTokens": {
-                    "description": "Optional configuration for the OIDC encrypted tokens feature.",
+                    "description": "Optional configuration for the OIDC encrypted token feature.",
                     "properties": {
                       "decryptionKeys": {
-                        "description": "Kubernetes secret where the token decryption keys are stored.",
+                        "description": "Kubernetes secret where the token decryption key(s) is/are stored.",
                         "items": {
+                          "description": "DecryptionKeysSecret specifies the namespace, and name of a kubernetes secret that holds the decryption keys for decrypting the encrypted tokens. kid is the unique key identifier for a decryption key that's used by the Provider to let the token recipient know which decryption key needs to be used for decrypting the token(s).",
                           "properties": {
                             "kid": {
                               "description": "kid is the unique key identifier that represents a decryption key.",
                               "type": "string"
                             },
                             "name": {
-                              "description": "Name of the secret that stores the decryption keys.",
+                              "description": "Kubernetes Name of the secret.",
                               "type": "string"
                             },
                             "namespace": {
-                              "description": "Namespace of the secret that stores the decryption keys.",
+                              "description": "Kubernetes NameSpace of the secret.",
                               "type": "string"
                             }
                           },
                           "required": [
+                            "kid",
                             "name",
-                            "namespace",
-                            "kid"
+                            "namespace"
                           ],
                           "type": "object"
                         },
                         "type": "array"
                       },
                       "enabled": {
-                        "description": "Specifies if OIDC tokens must be decrypted before being parsed. The token decryption feature is only enabled when this is set to true.",
+                        "description": "Specifies if OIDC token(s) must be decrypted before being parsed. The token decryption feature is only enabled when this field is set to true.",
                         "type": "boolean"
                       }
                     },
                     "required": [
-                      "enabled",
-                      "decryptionKeys"
+                      "decryptionKeys",
+                      "enabled"
                     ],
                     "type": "object"
                   },
@@ -381,22 +394,23 @@
                     "additionalProperties": {
                       "type": "string"
                     },
-                    "description": "Optional Common Expression Language (CEL) for mapping user attributes (such as x, y, z) from the identity provider to the web application.",
+                    "description": "Optional Common Expression Language (CEL) for mapping user attributes from the identity provider to the web application.",
                     "type": "object"
                   },
                   "encryptedAssertions": {
-                    "description": "Optional configuration for the SAML encrypted assertions feature.",
+                    "description": "Optional configuration for the SAML encrypted assertion feature.",
                     "properties": {
                       "decryptionKeys": {
-                        "description": "Kubernetes secret where the Assertion encryption certificate, and the assertion decryption key are stored. This secret needs to be of type TLS (see: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets).",
+                        "description": "Kubernetes secret where the Assertion encryption certificate, and the assertion decryption key are stored. This secret needs to be of type TLS. (see: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets).",
                         "items": {
+                          "description": "KubernetesSecretConfig specifies the namespace, and name of a kubernetes secret.",
                           "properties": {
                             "name": {
                               "description": "Kubernetes Name of the secret.",
                               "type": "string"
                             },
                             "namespace": {
-                              "description": "Kubernetes Namespace of the secret.",
+                              "description": "Kubernetes NameSpace of the secret.",
                               "type": "string"
                             }
                           },
@@ -414,8 +428,8 @@
                       }
                     },
                     "required": [
-                      "enabled",
-                      "decryptionKeys"
+                      "decryptionKeys",
+                      "enabled"
                     ],
                     "type": "object"
                   },
@@ -460,7 +474,7 @@
                             "type": "string"
                           },
                           "namespace": {
-                            "description": "Kubernetes Namespace of the secret.",
+                            "description": "Kubernetes NameSpace of the secret.",
                             "type": "string"
                           }
                         },
@@ -478,7 +492,7 @@
                     "type": "object"
                   },
                   "userAttribute": {
-                    "description": "Name of the attribute in the SAML response that holds the username. If unspecified, the username will be read from the \u003cNameID\u003e element of the assertion in SAML response. If specified but the attribute is missing in the SAML response, authentication will fail.",
+                    "description": "Name of the attribute in the SAML response that holds the username. If this attribute is missing from the SAML response, authentication will fail.",
                     "type": "string"
                   },
                   "userPrefix": {
@@ -505,6 +519,16 @@
           "description": "CertificateAuthorityData contains a Base64 encoded, PEM formatted certificate authority certificate for APIServer.",
           "format": "byte",
           "type": "string"
+        },
+        "identityServiceOptions": {
+          "description": "non-protocol-related identity service options available in the cluster.",
+          "properties": {
+            "sessionDuration": {
+              "description": "SessionDuration is the lifespan - in minutes - of tokens issued by AIS.",
+              "type": "integer"
+            }
+          },
+          "type": "object"
         },
         "internalServer": {
           "description": "InternalServer is the internal accessible DNS name of envoy service in Kubernetes. If AIS is running in webhook mode, the api server's DNS name will be put here (https://hostname:port).",

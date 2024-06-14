@@ -2,11 +2,11 @@
   "description": "OperatorConfig defines configuration of the gmp-operator.",
   "properties": {
     "apiVersion": {
-      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
       "type": "string"
     },
     "collection": {
-      "description": "Collection specifies how the operator configures collection.",
+      "description": "Collection specifies how the operator configures collection, including\nscraping and an integrated export to Google Cloud Monitoring.",
       "properties": {
         "compression": {
           "description": "Compression enables compression of metrics collection data",
@@ -17,14 +17,14 @@
           "type": "string"
         },
         "credentials": {
-          "description": "A reference to GCP service account credentials with which Prometheus collectors are run. It needs to have metric write permissions for all project IDs to which data is written. Within GKE, this can typically be left empty if the compute default service account has the required permissions.",
+          "description": "A reference to GCP service account credentials with which Prometheus collectors\nare run. It needs to have metric write permissions for all project IDs to which\ndata is written.\nWithin GKE, this can typically be left empty if the compute default\nservice account has the required permissions.",
           "properties": {
             "key": {
               "description": "The key of the secret to select from.  Must be a valid secret key.",
               "type": "string"
             },
             "name": {
-              "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+              "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
               "type": "string"
             },
             "optional": {
@@ -42,14 +42,14 @@
           "additionalProperties": {
             "type": "string"
           },
-          "description": "ExternalLabels specifies external labels that are attached to all scraped data before being written to Cloud Monitoring. The precedence behavior matches that of Prometheus.",
+          "description": "ExternalLabels specifies external labels that are attached to all scraped\ndata before being written to Google Cloud Monitoring or any other additional exports\nspecified in the OperatorConfig. The precedence behavior matches that of Prometheus.",
           "type": "object"
         },
         "filter": {
-          "description": "Filter limits which metric data is sent to Cloud Monitoring.",
+          "description": "Filter limits which metric data is sent to Cloud Monitoring (it doesn't apply to additional exports).",
           "properties": {
             "matchOneOf": {
-              "description": "A list of Prometheus time series matchers. Every time series must match at least one of the matchers to be exported. This field can be used equivalently to the match[] parameter of the Prometheus federation endpoint to selectively export data. Example: `[\"{job!='foobar'}\", \"{__name__!~'container_foo.*|container_bar.*'}\"]`",
+              "description": "A list of Prometheus time series matchers. Every time series must match at least one\nof the matchers to be exported. This field can be used equivalently to the match[]\nparameter of the Prometheus federation endpoint to selectively export data.\nExample: `[\"{job!='foobar'}\", \"{__name__!~'container_foo.*|container_bar.*'}\"]`",
               "items": {
                 "type": "string"
               },
@@ -64,6 +64,10 @@
             "interval": {
               "description": "The interval at which the metric endpoints are scraped.",
               "type": "string"
+            },
+            "tlsInsecureSkipVerify": {
+              "description": "TLSInsecureSkipVerify disables verifying the target cert.\nThis can be useful for clusters provisioned with kubeadm.",
+              "type": "boolean"
             }
           },
           "required": [
@@ -74,6 +78,22 @@
       },
       "type": "object"
     },
+    "exports": {
+      "description": "Exports is an EXPERIMENTAL feature that specifies additional, optional endpoints to export to,\non top of Google Cloud Monitoring collection.\nNote: To disable integrated export to Google Cloud Monitoring specify a non-matching filter in the \"collection.filter\" field.",
+      "items": {
+        "properties": {
+          "url": {
+            "description": "The URL of the endpoint that supports Prometheus Remote Write to export samples to.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
     "features": {
       "description": "Features holds configuration for optional managed-collection features.",
       "properties": {
@@ -81,7 +101,7 @@
           "description": "Settings for the collector configuration propagation.",
           "properties": {
             "compression": {
-              "description": "Compression enables compression of the config data propagated by the operator to collectors. It is recommended to use the gzip option when using a large number of ClusterPodMonitoring and/or PodMonitoring.",
+              "description": "Compression enables compression of the config data propagated by the operator to collectors\nand the rule-evaluator. It is recommended to use the gzip option when using a large number of\nClusterPodMonitoring, PodMonitoring, GlobalRules, ClusterRules, and/or Rules.",
               "enum": [
                 "none",
                 "gzip"
@@ -105,7 +125,7 @@
       "type": "object"
     },
     "kind": {
-      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
       "type": "string"
     },
     "managedAlertmanager": {
@@ -118,14 +138,14 @@
       "description": "ManagedAlertmanager holds information for configuring the managed instance of Alertmanager.",
       "properties": {
         "configSecret": {
-          "description": "ConfigSecret refers to the name of a single-key Secret in the public namespace that holds the managed Alertmanager config file.",
+          "description": "ConfigSecret refers to the name of a single-key Secret in the public namespace that\nholds the managed Alertmanager config file.",
           "properties": {
             "key": {
               "description": "The key of the secret to select from.  Must be a valid secret key.",
               "type": "string"
             },
             "name": {
-              "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+              "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
               "type": "string"
             },
             "optional": {
@@ -140,7 +160,7 @@
           "x-kubernetes-map-type": "atomic"
         },
         "externalURL": {
-          "description": "ExternalURL is the URL under which Alertmanager is externally reachable (for example, if Alertmanager is served via a reverse proxy). Used for generating relative and absolute links back to Alertmanager itself. If the URL has a path portion, it will be used to prefix all HTTP endpoints served by Alertmanager. If omitted, relevant URL components will be derived automatically.",
+          "description": "ExternalURL is the URL under which Alertmanager is externally reachable\n(for example, if Alertmanager is served via a reverse proxy).\nUsed for generating relative and absolute links back to Alertmanager\nitself. If the URL has a path portion, it will be used to prefix all HTTP\nendpoints served by Alertmanager.\nIf omitted, relevant URL components will be derived automatically.",
           "type": "string"
         }
       },
@@ -158,10 +178,10 @@
             "alertmanagers": {
               "description": "Alertmanagers contains endpoint configuration for designated Alertmanagers.",
               "items": {
-                "description": "AlertmanagerEndpoints defines a selection of a single Endpoints object containing alertmanager IPs to fire alerts against.",
+                "description": "AlertmanagerEndpoints defines a selection of a single Endpoints object\ncontaining alertmanager IPs to fire alerts against.",
                 "properties": {
                   "apiVersion": {
-                    "description": "Version of the Alertmanager API that rule-evaluator uses to send alerts. It can be \"v1\" or \"v2\".",
+                    "description": "Version of the Alertmanager API that rule-evaluator uses to send alerts. It\ncan be \"v1\" or \"v2\".",
                     "type": "string"
                   },
                   "authorization": {
@@ -175,7 +195,7 @@
                             "type": "string"
                           },
                           "name": {
-                            "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                            "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
                             "type": "string"
                           },
                           "optional": {
@@ -190,7 +210,7 @@
                         "x-kubernetes-map-type": "atomic"
                       },
                       "type": {
-                        "description": "Set the authentication type. Defaults to Bearer, Basic will cause an error",
+                        "description": "Set the authentication type. Defaults to Bearer, Basic will cause an\nerror",
                         "type": "string"
                       }
                     },
@@ -242,7 +262,7 @@
                                 "type": "string"
                               },
                               "name": {
-                                "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                                "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
                                 "type": "string"
                               },
                               "optional": {
@@ -264,7 +284,7 @@
                                 "type": "string"
                               },
                               "name": {
-                                "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                                "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
                                 "type": "string"
                               },
                               "optional": {
@@ -292,7 +312,7 @@
                                 "type": "string"
                               },
                               "name": {
-                                "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                                "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
                                 "type": "string"
                               },
                               "optional": {
@@ -314,7 +334,7 @@
                                 "type": "string"
                               },
                               "name": {
-                                "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                                "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
                                 "type": "string"
                               },
                               "optional": {
@@ -343,7 +363,7 @@
                             "type": "string"
                           },
                           "name": {
-                            "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+                            "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
                             "type": "string"
                           },
                           "optional": {
@@ -358,11 +378,11 @@
                         "x-kubernetes-map-type": "atomic"
                       },
                       "maxVersion": {
-                        "description": "Maximum TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3). If unset, Prometheus will use Go default minimum version, which is TLS 1.2. See MinVersion in https://pkg.go.dev/crypto/tls#Config.",
+                        "description": "Maximum TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3).\nIf unset, Prometheus will use Go default minimum version, which is TLS 1.2.\nSee MinVersion in https://pkg.go.dev/crypto/tls#Config.",
                         "type": "string"
                       },
                       "minVersion": {
-                        "description": "Minimum TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3). If unset, Prometheus will use Go default minimum version, which is TLS 1.2. See MinVersion in https://pkg.go.dev/crypto/tls#Config.",
+                        "description": "Minimum TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3).\nIf unset, Prometheus will use Go default minimum version, which is TLS 1.2.\nSee MinVersion in https://pkg.go.dev/crypto/tls#Config.",
                         "type": "string"
                       },
                       "serverName": {
@@ -386,14 +406,14 @@
           "type": "object"
         },
         "credentials": {
-          "description": "A reference to GCP service account credentials with which the rule evaluator container is run. It needs to have metric read permissions against queryProjectId and metric write permissions against all projects to which rule results are written. Within GKE, this can typically be left empty if the compute default service account has the required permissions.",
+          "description": "A reference to GCP service account credentials with which the rule\nevaluator container is run. It needs to have metric read permissions\nagainst queryProjectId and metric write permissions against all projects\nto which rule results are written.\nWithin GKE, this can typically be left empty if the compute default\nservice account has the required permissions.",
           "properties": {
             "key": {
               "description": "The key of the secret to select from.  Must be a valid secret key.",
               "type": "string"
             },
             "name": {
-              "description": "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?",
+              "description": "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?",
               "type": "string"
             },
             "optional": {
@@ -411,15 +431,15 @@
           "additionalProperties": {
             "type": "string"
           },
-          "description": "ExternalLabels specifies external labels that are attached to any rule results and alerts produced by rules. The precedence behavior matches that of Prometheus.",
+          "description": "ExternalLabels specifies external labels that are attached to any rule\nresults and alerts produced by rules. The precedence behavior matches that\nof Prometheus.",
           "type": "object"
         },
         "generatorUrl": {
-          "description": "The base URL used for the generator URL in the alert notification payload. Should point to an instance of a query frontend that gives access to queryProjectID.",
+          "description": "The base URL used for the generator URL in the alert notification payload.\nShould point to an instance of a query frontend that gives access to queryProjectID.",
           "type": "string"
         },
         "queryProjectID": {
-          "description": "QueryProjectID is the GCP project ID to evaluate rules against. If left blank, the rule-evaluator will try attempt to infer the Project ID from the environment.",
+          "description": "QueryProjectID is the GCP project ID to evaluate rules against.\nIf left blank, the rule-evaluator will try attempt to infer the Project ID\nfrom the environment.",
           "type": "string"
         }
       },
