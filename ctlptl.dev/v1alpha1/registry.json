@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Cluster contains registry configuration.",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "name": {
+      "description": "The registry name. Get/set from the Docker container name.",
+      "type": "string"
+    },
+    "listenAddress": {
+      "description": "The host IPv4 address to bind the container to.",
+      "type": "string"
+    },
+    "port": {
+      "description": "The desired host port. Set to 0 to choose a random port, or to preserve the existing port.",
+      "type": "integer"
+    },
+    "labels": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Labels that must be attached to the running registry.",
+      "type": "object",
+      "x-kubernetes-map-type": "atomic"
+    },
+    "env": {
+      "description": "Environment vars to use for registry container (optional).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "x-kubernetes-list-type": "atomic"
+    },
+    "image": {
+      "description": "Image to use for registry container (optional).",
+      "type": "string",
+      "default": "docker.io/library/registry:2"
+    },
+    "status": {
+      "description": "Most recently observed status of the registry. Populated by the system.",
+      "properties": {
+        "creationTimestamp": {
+          "description": "When the registry was first created.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "ipAddress": {
+          "description": "The IPv4 address for the bridge network.",
+          "type": "string"
+        },
+        "listenAddress": {
+          "description": "The public IPv4 address that the registry is listening on on the host machine.",
+          "type": "string"
+        },
+        "hostPort": {
+          "description": "The public port that the registry is listening on on the host machine.",
+          "type": "string"
+        },
+        "containerPort": {
+          "description": "The private port that the registry is listening on inside the registry network.",
+          "type": "integer"
+        },
+        "networks": {
+          "description": "Networks that the registry container is connected to.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "x-kubernetes-list-type": "atomic"
+        },
+        "containerId": {
+          "description": "The ID of the container in Docker.",
+          "type": "integer"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Labels that must be attached to the running registry.",
+          "type": "object",
+          "x-kubernetes-map-type": "atomic"
+        },
+        "env": {
+          "description": "Environment vars to use for registry container (optional).",
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "x-kubernetes-list-type": "atomic"
+        },
+        "image": {
+          "description": "Image to use for registry container (optional).",
+          "type": "string",
+          "default": "docker.io/library/registry:2"
+        },
+        "warnings": {
+          "description": "Warnings that occurred when reporting the registry status.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "x-kubernetes-list-type": "atomic"
+        }
+      },
+      "type": "object"
+    }
+  }
+}
