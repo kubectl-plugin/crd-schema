@@ -17,7 +17,13 @@
     },
     "product": {
       "description": "The name of the tool used to create this cluster.",
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "kind",
+        "minikube",
+        "k3d",
+        "docker-desktop"
+      ]
     },
     "minCPUs": {
       "description": "Make sure that the cluster has access to at least this many CPUs.",
