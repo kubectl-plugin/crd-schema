@@ -1,5 +1,5 @@
 {
-  "description": "GKENetworkParamSet represent GKE specific parameters for the network.",
+  "description": "HighAvailabilityApplication is the Schema for the highavailabilityapplications API.",
   "properties": {
     "apiVersion": {
       "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -13,53 +13,76 @@
       "type": "object"
     },
     "spec": {
-      "description": "GKENetworkParamSetSpec contains the specifications for network object",
+      "description": "HighAvailabilityApplicationSpec defines the resources that belong to a HighAvailabilityApplication, and the policy to apply to that application.",
       "properties": {
-        "deviceMode": {
-          "description": "DeviceMode indicates the mode in which the devices will be used by the Pod. This field is required and valid only for \"Device\" typed network. Mutually exclusive with NetworkAttachment.",
-          "enum": [
-            "DPDK-VFIO",
-            "NetDevice",
-            "RDMA"
-          ],
-          "type": "string"
-        },
-        "networkAttachment": {
-          "description": "NetworkAttachment specifies the network attachment to connect to. Mutually exclusive with VPC, VPCSubnet, DeviceMode, and PodIPv4Ranges.",
-          "type": "string"
-        },
-        "podIPv4Ranges": {
-          "description": "PodIPv4Ranges specify the names of the secondary ranges of the VPC subnet used to allocate pod IPs for the network. This field is required and valid only for L3 typed network. Mutually exclusive with NetworkAttachment.",
+        "policy": {
+          "description": "Policy defines the high availability characteristics of this application",
           "properties": {
-            "rangeNames": {
-              "items": {
-                "type": "string"
+            "failoverSettings": {
+              "description": "FailoverSettings defines the failover settings when an application pod encounters an error.",
+              "properties": {
+                "afterNodeUnreachable": {
+                  "description": "Configuration for a force delete strategy of \"AfterNodeUnreachable\". Should only be set when type is equal to AfterNodeUnreachable.",
+                  "properties": {
+                    "afterNodeUnreachableSeconds": {
+                      "description": "AfterNodeUnreachableSeconds is the timeout to force delete a pod after the node it is running on is marked as unreachable.",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                },
+                "forceDeleteStrategy": {
+                  "description": "forceDeleteStrategy determines how force delete is triggered on node failure. This is the union discriminator.",
+                  "enum": [
+                    "AfterNodeUnreachable"
+                  ],
+                  "type": "string"
+                }
               },
-              "minItems": 1,
-              "type": "array"
+              "type": "object"
+            },
+            "storageSettings": {
+              "description": "StorageSettings defines the high availability characteristics of this application.",
+              "properties": {
+                "requireRegionalStorage": {
+                  "default": true,
+                  "description": "RequireRegionalStorage enforces regional storage when using a HighAvailabilityApplication.",
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "resourceSelection": {
+          "description": "ResourceSelection specifies the resources belonging to this HighAvailabilityApplication. The HighAvailabilityApplication will look for a resource with the same name and namespace as itself.",
+          "properties": {
+            "resourceKind": {
+              "description": "ResourceKind specifies the kind of resources included in this component. Only \"StatefulSet\" is currently supported.",
+              "enum": [
+                "StatefulSet"
+              ],
+              "type": "string"
             }
           },
           "required": [
-            "rangeNames"
+            "resourceKind"
           ],
           "type": "object"
-        },
-        "vpc": {
-          "description": "VPC specifies the VPC to which the network belongs. This field is required when not connecting across a network attachment. Mutually exclusive with NetworkAttachment.",
-          "type": "string"
-        },
-        "vpcSubnet": {
-          "description": "VPCSubnet is the path of the VPC subnet. Must be set if specifying VPC. Mutually exclusive with NetworkAttachment.",
-          "type": "string"
         }
       },
+      "required": [
+        "policy",
+        "resourceSelection"
+      ],
       "type": "object"
     },
     "status": {
-      "description": "GKENetworkParamSetStatus contains the status information related to the network.",
+      "description": "HighAvailabilityApplicationStatus defines the status of this HighAvailabilityApplication.",
       "properties": {
         "conditions": {
-          "description": "Conditions is a field representing the current conditions of the GKENetworkParamSet. \n Known condition types are: \n * \"Ready\"",
+          "description": "Represents the latest available observations of the protected applications.",
           "items": {
             "description": "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }",
             "properties": {
@@ -111,33 +134,12 @@
             ],
             "type": "object"
           },
-          "type": "array",
-          "x-kubernetes-list-map-keys": [
-            "type"
-          ],
-          "x-kubernetes-list-type": "map"
-        },
-        "networkName": {
-          "description": "NetworkName specifies which Network object is currently referencing this GKENetworkParamSet",
-          "type": "string"
-        },
-        "podCIDRs": {
-          "description": "PodCIDRs specifies the CIDRs from which IPs will be used for Pod interfaces",
-          "properties": {
-            "cidrBlocks": {
-              "items": {
-                "type": "string"
-              },
-              "minItems": 1,
-              "type": "array"
-            }
-          },
-          "required": [
-            "cidrBlocks"
-          ],
-          "type": "object"
+          "type": "array"
         }
       },
+      "required": [
+        "conditions"
+      ],
       "type": "object"
     }
   },

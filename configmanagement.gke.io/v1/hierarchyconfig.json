@@ -1,0 +1,53 @@
+{
+  "description": "HierarchyConfig is used for configuring the HierarchyModeType for managed resources.",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "Spec is the standard spec field.",
+      "properties": {
+        "resources": {
+          "items": {
+            "description": "HierarchyConfigResource specifies the HierarchyModeType based on the matching Groups and Kinds enabled.",
+            "properties": {
+              "group": {
+                "description": "Group is the name of the APIGroup that contains the resources.",
+                "type": "string"
+              },
+              "hierarchyMode": {
+                "description": "HierarchyMode specifies how the object is treated when it appears in an abstract namespace.\nThe default is \"inherit\", meaning objects are inherited from parent abstract namespaces.\nIf set to \"none\", the type is not allowed in Abstract Namespaces.",
+                "type": "string"
+              },
+              "kinds": {
+                "description": "Kinds is a list of kinds this rule applies to.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "resources"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "spec"
+  ],
+  "type": "object"
+}

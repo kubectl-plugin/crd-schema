@@ -1,5 +1,14 @@
 {
   "properties": {
+    "apiVersion": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
     "spec": {
       "properties": {
         "digest": {
@@ -22,6 +31,74 @@
           "type": "string"
         }
       },
+      "required": [
+        "digest",
+        "image",
+        "packages",
+        "scantype",
+        "timestamp",
+        "version"
+      ],
+      "type": "object"
+    },
+    "status": {
+      "properties": {
+        "attempt_count": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "conditions": {
+          "items": {
+            "properties": {
+              "lastTransitionTime": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "message": {
+                "maxLength": 32768,
+                "type": "string"
+              },
+              "observedGeneration": {
+                "format": "int64",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "reason": {
+                "maxLength": 1024,
+                "minLength": 1,
+                "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "True",
+                  "False",
+                  "Unknown"
+                ],
+                "type": "string"
+              },
+              "type": {
+                "maxLength": 316,
+                "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "lastTransitionTime",
+              "message",
+              "reason",
+              "status",
+              "type"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "attempt_count",
+        "conditions"
+      ],
       "type": "object"
     }
   },

@@ -1,0 +1,114 @@
+{
+  "description": "GCPBackend is the Schema for the GCPBackend resource.",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "GCPBackendSpec defines the desired state of GRPCRoute.",
+      "properties": {
+        "backendservice": {
+          "description": "BackendService defines a backend service. Only one of BackendService or CloudRun can be set.",
+          "properties": {
+            "location": {
+              "description": "Location is the location of the backend service. Must be Global for CSM. (regional/Global for managed LB.) Defaults to the same location as the cluster.",
+              "maxLength": 63,
+              "minLength": 1,
+              "pattern": "[a-z]*\\-[a-z]*[0-9]{1,5}$|global$",
+              "type": "string"
+            },
+            "name": {
+              "description": "Name is the backend service name.",
+              "maxLength": 63,
+              "minLength": 1,
+              "pattern": "^[a-z]([-a-z0-9]*[a-z0-9])?$",
+              "type": "string"
+            },
+            "project": {
+              "description": "Project ID of the backend service. Defaults to the same project as the GKE cluster.",
+              "maxLength": 30,
+              "minLength": 6,
+              "pattern": "(?:[^:]+:)?[a-z0-9\\\\-]+",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object"
+        },
+        "cloudrun": {
+          "description": "CloudRun defines a backend running in CloudRun. Only one of BackendService or CloudRun can be set.",
+          "properties": {
+            "project": {
+              "description": "Project ID of the CloudRun service. Defaults to the same project as the GKE cluster.",
+              "maxLength": 30,
+              "minLength": 6,
+              "pattern": "(?:[^:]+:)?[a-z0-9\\\\-]+",
+              "type": "string"
+            },
+            "regions": {
+              "description": "Regions allows to specify the regions of CloudRun service. At least one region has to be provided.",
+              "items": {
+                "description": "Region is the region of the specified cloud resources. Eg. us-east1",
+                "maxLength": 63,
+                "minLength": 1,
+                "pattern": "[a-z]*\\-[a-z]*[0-9]{1,5}$",
+                "type": "string"
+              },
+              "maxItems": 1,
+              "minItems": 1,
+              "type": "array"
+            },
+            "service": {
+              "description": "Service is the Cloudrun service name.",
+              "maxLength": 49,
+              "minLength": 1,
+              "pattern": "^[a-z]([-a-z0-9]*[a-z0-9])?$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "service"
+          ],
+          "type": "object"
+        },
+        "hostname": {
+          "description": "The hosts associated with the GCPBackend. The Hostname can be used by mesh clients to access the resources specified in GCPBackend. The hostname has no effect on ingress gateway routing. \n Hostname is the fully qualified  domain name of a network host. This matches the RFC 1123 definition of a hostname except that it does not allow IP. \n Note that as per RFC1035 and RFC1123, a *label* must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character. No other punctuation is allowed.",
+          "maxLength": 253,
+          "minLength": 1,
+          "pattern": "^(\\*\\.)?[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$",
+          "type": "string"
+        },
+        "port": {
+          "description": "The port associated with the GCPBackend. The Port can be used by mesh clients to access the resources specified in GCPBackend. The port has no effect on ingress gateway routing. Defaults to 80 if not specified. The protocol is assumed to be HTTP.",
+          "format": "int32",
+          "maximum": 65535,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "type": {
+          "description": "The type of GCPBackend used. This can only be: CloudRun or BackendService.",
+          "enum": [
+            "CloudRun",
+            "BackendService"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "spec": {
+      "properties": {
+        "cloudStorage": {
+          "properties": {
+            "serviceAccountName": {
+              "type": "string"
+            },
+            "uri": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "status": {
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "instanceHandle": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

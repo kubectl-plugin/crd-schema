@@ -1,0 +1,242 @@
+{
+  "description": "ConfigSync is the Schema for the configsyncs API.",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "ConfigSyncSpec defines the desired state of ConfigSync.",
+      "properties": {
+        "channel": {
+          "description": "Channel specifies a channel that can be used to resolve a specific addon, eg: stable\nIt will be ignored if Version is specified",
+          "type": "string"
+        },
+        "clusterName": {
+          "description": "ClusterName, if defined, sets the name for this cluster.\nOtherwise, the cluster is unnamed and cannot use ClusterSelectors.",
+          "type": "string"
+        },
+        "fleetWorkloadIdentityPool": {
+          "description": "FleetWIPool used by telemetry for ingesting metrics.",
+          "type": "string"
+        },
+        "identityProvider": {
+          "description": "IdentityProvider used by telemetry for ingesting metrics.",
+          "type": "string"
+        },
+        "imageRegistry": {
+          "description": "ImageRegistry specifies a custom image registry to use.",
+          "nullable": true,
+          "properties": {
+            "baseURL": {
+              "description": "BaseURL indicates the base URL of the image registry.",
+              "type": "string"
+            },
+            "imagePullSecret": {
+              "description": "ImagePullSecret indicates the name of the Secret containing credentials to pull from the image registry.",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "overrides": {
+          "description": "Overrides enables advanced overriding of fields for certain Config Sync objects.",
+          "nullable": true,
+          "properties": {
+            "deployments": {
+              "description": "Deployments allows to override certain fields of Config Sync Deployments.\nNote that this does not allow overriding reconciler Deployments.\nTo override a reconciler Deployment, use the override API on the respective RootSync or RepoSync object.",
+              "items": {
+                "description": "DeploymentOverrideSpec allows to override certain fields of a Deployment.",
+                "properties": {
+                  "name": {
+                    "description": "Name indicates the name of the Deployment. Required.",
+                    "type": "string"
+                  },
+                  "namespace": {
+                    "description": "Namespace indicates the namespace of the Deployment. Required.",
+                    "type": "string"
+                  },
+                  "resources": {
+                    "description": "Resources indicates resource requests/limits for containers in the Pod. Required.",
+                    "items": {
+                      "description": "ContainerResourcesOverrideSpec allows to override the resource requirements for a container.",
+                      "properties": {
+                        "containerName": {
+                          "description": "Name specifies the name of a container whose resource requirements will be overridden. Required.",
+                          "type": "string"
+                        },
+                        "cpuLimit": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ],
+                          "description": "CPULimit allows one to override the CPU limit of a container.",
+                          "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                          "x-kubernetes-int-or-string": true
+                        },
+                        "cpuRequest": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ],
+                          "description": "CPURequest allows one to override the CPU request of a container.",
+                          "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                          "x-kubernetes-int-or-string": true
+                        },
+                        "memoryLimit": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ],
+                          "description": "MemoryLimit allows one to override the memory limit of a container.",
+                          "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                          "x-kubernetes-int-or-string": true
+                        },
+                        "memoryRequest": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ],
+                          "description": "MemoryRequest allows one to override the memory request of a container.",
+                          "pattern": "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$",
+                          "x-kubernetes-int-or-string": true
+                        }
+                      },
+                      "required": [
+                        "containerName"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "name",
+                  "namespace",
+                  "resources"
+                ],
+                "type": "object"
+              },
+              "nullable": true,
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "preventDrift": {
+          "description": "PreventDrift enables the Config Sync admission webhook to prevent drift,\nif set to \"true\". Otherwise, it disables the Config Sync admission\nwebhook and does not prevent drift; the default value is \"false\".\nConfig Sync always corrects drift no matter the value of PreventDrift.",
+          "type": "boolean"
+        },
+        "stopSyncing": {
+          "description": "StopSyncing stops syncing configs at the cluster level if set to \"true\".\nThe default value is \"false\".",
+          "type": "boolean"
+        },
+        "version": {
+          "description": "Version specifies the exact addon version to be deployed, eg 1.2.3\nIt should not be specified if Channel is specified",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "status": {
+      "description": "ConfigSyncStatus defines the observed state of ConfigSync.",
+      "properties": {
+        "conditions": {
+          "description": "Conditions follows the API specification \"Conditions\" properties.\nhttps://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties",
+          "items": {
+            "description": "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}",
+            "properties": {
+              "lastTransitionTime": {
+                "description": "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.",
+                "format": "date-time",
+                "type": "string"
+              },
+              "message": {
+                "description": "message is a human readable message indicating details about the transition.\nThis may be an empty string.",
+                "maxLength": 32768,
+                "type": "string"
+              },
+              "observedGeneration": {
+                "description": "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance.",
+                "format": "int64",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "reason": {
+                "description": "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty.",
+                "maxLength": 1024,
+                "minLength": 1,
+                "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$",
+                "type": "string"
+              },
+              "status": {
+                "description": "status of the condition, one of True, False, Unknown.",
+                "enum": [
+                  "True",
+                  "False",
+                  "Unknown"
+                ],
+                "type": "string"
+              },
+              "type": {
+                "description": "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)",
+                "maxLength": 316,
+                "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "lastTransitionTime",
+              "message",
+              "reason",
+              "status",
+              "type"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "healthy": {
+          "type": "boolean"
+        },
+        "phase": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "healthy"
+      ],
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

@@ -91,6 +91,14 @@
               "selfLink": {
                 "description": "SelfLink is the GCE Server-defined fully-qualified URL for the GCE NEG resource",
                 "type": "string"
+              },
+              "state": {
+                "description": "Current condition of this network endpoint group.",
+                "type": "string"
+              },
+              "subnetURL": {
+                "description": "URL of the subnetwork to which all network endpoints in the NEG belong.",
+                "type": "string"
               }
             },
             "required": [
