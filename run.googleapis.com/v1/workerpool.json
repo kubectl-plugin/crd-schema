@@ -1,0 +1,575 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cloud Run WorkerPool (run.googleapis.com/v1)",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Schema for a Cloud Run WorkerPool manifest (run.googleapis.com/v1, kind=WorkerPool) based on the Cloud Run YAML v1 reference.",
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "run.googleapis.com/v1",
+      "description": "API version for a Cloud Run WorkerPool in the Cloud Run Admin API v1 YAML representation."
+    },
+    "kind": {
+      "type": "string",
+      "const": "WorkerPool",
+      "description": "Resource kind. Must be WorkerPool."
+    },
+    "metadata": {
+      "$ref": "#/$defs/ObjectMetaWorkerPool"
+    },
+    "spec": {
+      "$ref": "#/$defs/WorkerPoolSpec"
+    }
+  },
+  "$defs": {
+    "DNSLabel": {
+      "type": "string",
+      "description": "DNS label-like identifier. Cloud Run worker pool names follow Cloud Run naming constraints.",
+      "minLength": 1,
+      "maxLength": 63,
+      "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"
+    },
+    "IntOrString": {
+      "description": "A value that may be represented as an integer or a string (useful for YAML/JSON interoperability).",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "BoolOrString": {
+      "description": "A value that may be represented as a boolean or a string (useful for YAML/JSON interoperability).",
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "true",
+            "false"
+          ]
+        }
+      ]
+    },
+    "Quantity": {
+      "type": "string",
+      "description": "Kubernetes-style resource quantity (e.g. '1', '1000m', '512Mi', '2Gi')."
+    },
+    "ObjectMetaWorkerPool": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Metadata for the Cloud Run WorkerPool resource.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/DNSLabel",
+          "description": "Name of the Cloud Run worker pool."
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Project number in Cloud Run YAML exports (managed by Cloud Run tooling).",
+          "minLength": 1
+        },
+        "labels": {
+          "type": "object",
+          "description": "WorkerPool resource labels. Cloud Run YAML reference includes 'cloud.googleapis.com/location' for region.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "cloud.googleapis.com/location": {
+              "type": "string",
+              "description": "Cloud Run region (for example 'us-central1', 'asia-northeast1')."
+            }
+          }
+        },
+        "annotations": {
+          "$ref": "#/$defs/WorkerPoolAnnotations",
+          "description": "WorkerPool-level annotations supported by Cloud Run YAML v1 reference."
+        }
+      }
+    },
+    "WorkerPoolAnnotations": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Cloud Run-specific annotations at metadata.annotations for WorkerPool objects.",
+      "properties": {
+        "run.googleapis.com/launch-stage": {
+          "type": "string",
+          "description": "Launch stage gate used to enable preview features.",
+          "enum": [
+            "ALPHA",
+            "BETA",
+            "GA"
+          ]
+        },
+        "run.googleapis.com/description": {
+          "type": "string",
+          "description": "Human-readable description of the worker pool."
+        },
+        "run.googleapis.com/binary-authorization": {
+          "type": "string",
+          "description": "Binary Authorization policy identifier/config reference for the worker pool."
+        },
+        "run.googleapis.com/binary-authorization-breakglass": {
+          "type": "string",
+          "description": "Binary Authorization 'breakglass' justification text."
+        },
+        "run.googleapis.com/manualInstanceCount": {
+          "$ref": "#/$defs/IntOrString",
+          "description": "Manual instance count for the worker pool."
+        }
+      }
+    },
+    "WorkerPoolSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Desired state of the WorkerPool.",
+      "required": [
+        "template"
+      ],
+      "properties": {
+        "template": {
+          "$ref": "#/$defs/WorkerPoolRevisionTemplate"
+        },
+        "instanceSplits": {
+          "type": "array",
+          "description": "Instance split routing rules for the worker pool (similar concept to traffic splits, but for worker pool instances).",
+          "items": {
+            "$ref": "#/$defs/InstanceSplit"
+          }
+        }
+      }
+    },
+    "WorkerPoolRevisionTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Revision template used to create new worker pool revisions.",
+      "required": [
+        "spec"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Metadata for the worker pool revision template.",
+          "properties": {
+            "name": {
+              "$ref": "#/$defs/DNSLabel",
+              "description": "Optional explicit revision name. If provided, must follow Cloud Run revision naming rules."
+            },
+            "annotations": {
+              "$ref": "#/$defs/WorkerPoolTemplateAnnotations",
+              "description": "Template annotations for worker pool revisions (spec.template.metadata.annotations)."
+            }
+          }
+        },
+        "spec": {
+          "$ref": "#/$defs/WorkerPoolRevisionSpec"
+        }
+      }
+    },
+    "WorkerPoolTemplateAnnotations": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Cloud Run-specific annotations for the worker pool revision template.",
+      "properties": {
+        "run.googleapis.com/cloudsql-instances": {
+          "type": "string",
+          "description": "Comma-separated Cloud SQL instance connection names attached to the revision."
+        },
+        "run.googleapis.com/vpc-access-egress": {
+          "type": "string",
+          "description": "Egress setting when using VPC networking features on the worker pool.",
+          "enum": [
+            "all-traffic",
+            "private-ranges-only"
+          ]
+        },
+        "run.googleapis.com/network-interfaces": {
+          "type": "string",
+          "description": "JSON string describing VPC network settings for Direct VPC egress / network interfaces."
+        },
+        "run.googleapis.com/encryption-key": {
+          "type": "string",
+          "description": "CMEK resource name used to encrypt resources for the revision."
+        },
+        "run.googleapis.com/container-dependencies": {
+          "type": "string",
+          "description": "Container start ordering/dependencies (multi-container) for the worker pool."
+        }
+      }
+    },
+    "WorkerPoolRevisionSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Revision spec for the worker pool (runtime configuration).",
+      "required": [
+        "containers"
+      ],
+      "properties": {
+        "nodeSelector": {
+          "type": "object",
+          "description": "Node selector constraints (Cloud Run uses this for accelerators).",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "run.googleapis.com/accelerator": {
+              "type": "string",
+              "description": "GPU/accelerator type selector for the worker pool revision."
+            }
+          }
+        },
+        "serviceAccountName": {
+          "type": "string",
+          "description": "Service account email used by the worker pool revision."
+        },
+        "containers": {
+          "type": "array",
+          "description": "One or more containers (multi-container supported).",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Container"
+          }
+        },
+        "volumes": {
+          "type": "array",
+          "description": "Volumes available to containers.",
+          "items": {
+            "$ref": "#/$defs/Volume"
+          }
+        }
+      }
+    },
+    "Container": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Container definition within a worker pool revision.",
+      "required": [
+        "image"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/DNSLabel",
+          "description": "Optional container name. Automatically generated if not supplied."
+        },
+        "image": {
+          "type": "string",
+          "description": "Container image reference (e.g. Artifact Registry, Docker Hub).",
+          "minLength": 1
+        },
+        "command": {
+          "type": "array",
+          "description": "Entrypoint array (overrides container image entrypoint).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "args": {
+          "type": "array",
+          "description": "Arguments array (overrides container image cmd).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env": {
+          "type": "array",
+          "description": "Environment variables.",
+          "items": {
+            "$ref": "#/$defs/EnvVar"
+          }
+        },
+        "resources": {
+          "$ref": "#/$defs/ResourceRequirements"
+        },
+        "volumeMounts": {
+          "type": "array",
+          "description": "Volume mounts for the container.",
+          "items": {
+            "$ref": "#/$defs/VolumeMount"
+          }
+        }
+      }
+    },
+    "EnvVar": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Environment variable definition.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Environment variable name."
+        },
+        "value": {
+          "type": "string",
+          "description": "Environment variable value."
+        }
+      }
+    },
+    "ResourceRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Resource requests/limits for the container (Cloud Run primarily uses limits).",
+      "properties": {
+        "limits": {
+          "type": "object",
+          "description": "Resource limits for the container.",
+          "additionalProperties": false,
+          "properties": {
+            "cpu": {
+              "$ref": "#/$defs/Quantity",
+              "description": "CPU limit (e.g. '1', '2', '1000m')."
+            },
+            "memory": {
+              "$ref": "#/$defs/Quantity",
+              "description": "Memory limit (e.g. '512Mi', '2Gi')."
+            },
+            "nvidia.com/gpu": {
+              "$ref": "#/$defs/IntOrString",
+              "description": "Number of GPUs requested."
+            }
+          }
+        }
+      }
+    },
+    "VolumeMount": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mount a volume into a container filesystem.",
+      "required": [
+        "name",
+        "mountPath"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the referenced volume."
+        },
+        "mountPath": {
+          "type": "string",
+          "description": "Path inside the container where the volume is mounted."
+        }
+      }
+    },
+    "Volume": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Volume definition. Cloud Run YAML v1 reference shows secret, emptyDir, CSI (GCS FUSE), and NFS.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Volume name referenced by container volumeMounts."
+        },
+        "secret": {
+          "$ref": "#/$defs/SecretVolumeSource"
+        },
+        "emptyDir": {
+          "$ref": "#/$defs/EmptyDirVolumeSource"
+        },
+        "csi": {
+          "$ref": "#/$defs/CSIVolumeSource"
+        },
+        "nfs": {
+          "$ref": "#/$defs/NFSVolumeSource"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "secret"
+          ]
+        },
+        {
+          "required": [
+            "emptyDir"
+          ]
+        },
+        {
+          "required": [
+            "csi"
+          ]
+        },
+        {
+          "required": [
+            "nfs"
+          ]
+        }
+      ]
+    },
+    "KeyToPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Maps a secret key/version to a file path within the mounted volume.",
+      "required": [
+        "key",
+        "path"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Secret key (or version identifier in Cloud Run examples)."
+        },
+        "path": {
+          "type": "string",
+          "description": "Relative file path to project the key to."
+        }
+      }
+    },
+    "SecretVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Secret-backed volume source.",
+      "required": [
+        "secretName"
+      ],
+      "properties": {
+        "secretName": {
+          "type": "string",
+          "description": "Name of the secret to mount."
+        },
+        "items": {
+          "type": "array",
+          "description": "Specific secret keys/versions to mount.",
+          "items": {
+            "$ref": "#/$defs/KeyToPath"
+          }
+        }
+      }
+    },
+    "EmptyDirVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "EmptyDir volume source (ephemeral storage).",
+      "properties": {
+        "sizeLimit": {
+          "$ref": "#/$defs/Quantity",
+          "description": "Maximum size for the emptyDir volume."
+        },
+        "medium": {
+          "type": "string",
+          "description": "Storage medium for emptyDir.",
+          "enum": [
+            "Memory",
+            "MEMORY"
+          ]
+        }
+      }
+    },
+    "CSIVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "CSI volume source (e.g. GCS FUSE on Cloud Run).",
+      "required": [
+        "driver"
+      ],
+      "properties": {
+        "driver": {
+          "type": "string",
+          "description": "CSI driver name. Cloud Run GCS FUSE uses 'gcsfuse.run.googleapis.com'."
+        },
+        "readOnly": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "Whether the volume is mounted read-only."
+        },
+        "volumeAttributes": {
+          "type": "object",
+          "description": "Driver-specific attributes (e.g. bucketName, mountOptions).",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "bucketName": {
+              "type": "string",
+              "description": "GCS bucket name for GCS FUSE mounts."
+            },
+            "mountOptions": {
+              "type": "string",
+              "description": "Comma-separated mount options for GCS FUSE."
+            }
+          }
+        }
+      }
+    },
+    "NFSVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "NFS volume source.",
+      "required": [
+        "server",
+        "path"
+      ],
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "NFS server address."
+        },
+        "path": {
+          "type": "string",
+          "description": "Exported NFS path."
+        },
+        "readonly": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "Whether the NFS mount is read-only."
+        }
+      }
+    },
+    "InstanceSplit": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Routes a percentage of instances to a revision (or the latest revision).",
+      "properties": {
+        "percent": {
+          "type": "integer",
+          "description": "Percent of instances assigned to this target.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "latestRevision": {
+          "type": "boolean",
+          "description": "If true, assigns instances to the latest ready revision."
+        },
+        "revisionName": {
+          "$ref": "#/$defs/DNSLabel",
+          "description": "Assigns instances to a specific revision by name."
+        }
+      },
+      "allOf": [
+        {
+          "description": "Either 'latestRevision' must be true OR 'revisionName' must be specified.",
+          "oneOf": [
+            {
+              "required": [
+                "latestRevision"
+              ]
+            },
+            {
+              "required": [
+                "revisionName"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
