@@ -1,0 +1,891 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cloud Run Knative Service (serving.knative.dev/v1)",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Schema for a Cloud Run service manifest using Knative Serving (serving.knative.dev/v1, kind=Service). This reflects the Cloud Run v1 YAML reference and Cloud Run-specific metadata restrictions.",
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "serving.knative.dev/v1",
+      "description": "API version for Knative Service on Cloud Run."
+    },
+    "kind": {
+      "type": "string",
+      "const": "Service",
+      "description": "Kubernetes/Knative resource kind. Must be Service."
+    },
+    "metadata": {
+      "$ref": "#/$defs/ObjectMetaService"
+    },
+    "spec": {
+      "$ref": "#/$defs/ServiceSpec"
+    }
+  },
+  "$defs": {
+    "DNSLabel": {
+      "type": "string",
+      "description": "DNS label-like name (typical for Kubernetes resource names). Cloud Run service names must be region+project unique and follow Cloud Run constraints.",
+      "minLength": 1,
+      "maxLength": 63,
+      "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"
+    },
+    "IntOrString": {
+      "description": "Value that may be represented as an integer or a string (useful for YAML/JSON interop).",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "BoolOrString": {
+      "description": "Value that may be represented as a boolean or a string (useful for YAML/JSON interop).",
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "true",
+            "false"
+          ]
+        }
+      ]
+    },
+    "Quantity": {
+      "type": "string",
+      "description": "Kubernetes-style resource quantity (e.g. '1', '1000m', '512Mi', '2Gi')."
+    },
+    "MapStringString": {
+      "type": "object",
+      "description": "Generic string-to-string map.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "ObjectMetaService": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Metadata for the Cloud Run Service resource.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/DNSLabel",
+          "description": "Name of the Cloud Run service."
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Project number in Cloud Run YAML exports. Typically set/managed by Cloud Run tooling.",
+          "minLength": 1
+        },
+        "labels": {
+          "type": "object",
+          "description": "Resource labels. Cloud Run uses the label 'cloud.googleapis.com/location' to capture region in YAML exports; other user labels are allowed.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "cloud.googleapis.com/location": {
+              "type": "string",
+              "description": "Cloud Run region (e.g. 'us-central1', 'asia-northeast1'). This label appears in Cloud Run YAML reference/examples."
+            }
+          }
+        },
+        "annotations": {
+          "$ref": "#/$defs/ServiceAnnotations",
+          "description": "Service-level annotations. Cloud Run restricts which 'run.googleapis.com/*' (and some Knative) annotations are accepted on the Service resource."
+        }
+      }
+    },
+    "ServiceAnnotations": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Cloud Run-specific Service metadata.annotations as documented in the Cloud Run v1 YAML reference and Cloud Run RPC docs.",
+      "properties": {
+        "run.googleapis.com/launch-stage": {
+          "type": "string",
+          "description": "Launch stage gate for preview features on the service.",
+          "enum": [
+            "ALPHA",
+            "BETA",
+            "GA"
+          ]
+        },
+        "run.googleapis.com/description": {
+          "type": "string",
+          "description": "Human-readable description of the service."
+        },
+        "run.googleapis.com/ingress": {
+          "type": "string",
+          "description": "Ingress setting for the service. Values correspond to Cloud Run ingress modes.",
+          "enum": [
+            "all",
+            "internal",
+            "internal-and-cloud-load-balancing"
+          ]
+        },
+        "run.googleapis.com/binary-authorization": {
+          "type": "string",
+          "description": "Binary Authorization policy identifier/config reference for the service."
+        },
+        "run.googleapis.com/binary-authorization-breakglass": {
+          "type": "string",
+          "description": "Binary Authorization 'breakglass' justification text."
+        },
+        "run.googleapis.com/minScale": {
+          "$ref": "#/$defs/IntOrString",
+          "description": "Service-level minimum instances (service scaling)."
+        },
+        "run.googleapis.com/maxScale": {
+          "$ref": "#/$defs/IntOrString",
+          "description": "Service-level maximum instances (service scaling)."
+        },
+        "run.googleapis.com/function-target": {
+          "type": "string",
+          "description": "For Cloud Functions (2nd gen) on Cloud Run: function entry point / target."
+        },
+        "run.googleapis.com/invoker-iam-disabled": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "If true, disables Cloud Run IAM invoker checks for the service."
+        },
+        "run.googleapis.com/iap-enabled": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "If true, enables Identity-Aware Proxy (IAP) on the service (where supported/configured)."
+        },
+        "run.googleapis.com/scalingMode": {
+          "type": "string",
+          "description": "Service scaling mode (automatic vs manual).",
+          "enum": [
+            "AUTOMATIC",
+            "MANUAL"
+          ]
+        },
+        "run.googleapis.com/manualInstanceCount": {
+          "$ref": "#/$defs/IntOrString",
+          "description": "Manual instance count when scalingMode is MANUAL."
+        },
+        "run.googleapis.com/client-name": {
+          "type": "string",
+          "description": "Client identifier set by tooling (e.g., console, gcloud, terraform)."
+        },
+        "run.googleapis.com/custom-audiences": {
+          "type": "string",
+          "description": "JSON string array of custom audiences for authentication tokens (service-level). Example: '[\"aud1\",\"aud2\"]'."
+        },
+        "run.googleapis.com/default-url-disabled": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "If true, disables the default run.app URL for the service."
+        },
+        "run.googleapis.com/gc-traffic-tags": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "Controls Cloud Run traffic tags behavior (service-level)."
+        }
+      }
+    },
+    "ServiceSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Desired state of the Service.",
+      "required": [
+        "template"
+      ],
+      "properties": {
+        "template": {
+          "$ref": "#/$defs/RevisionTemplate"
+        },
+        "traffic": {
+          "type": "array",
+          "description": "Traffic routing rules for the service.",
+          "items": {
+            "$ref": "#/$defs/TrafficTarget"
+          }
+        }
+      }
+    },
+    "RevisionTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Revision template used to create new revisions for the service.",
+      "required": [
+        "spec"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Metadata for the revision template.",
+          "properties": {
+            "name": {
+              "$ref": "#/$defs/DNSLabel",
+              "description": "Optional explicit revision name. If provided, must follow Cloud Run revision naming rules."
+            },
+            "labels": {
+              "$ref": "#/$defs/RevisionLabel",
+              "description": "Revision-level labels (template.metadata.labels). Cloud Run restricts accepted 'run.googleapis.com/*'."
+            },
+            "annotations": {
+              "$ref": "#/$defs/RevisionAnnotations",
+              "description": "Revision-level annotations (template.metadata.annotations). Cloud Run restricts accepted 'run.googleapis.com/*' and 'autoscaling.knative.dev/*' keys here."
+            }
+          }
+        },
+        "spec": {
+          "$ref": "#/$defs/RevisionSpec"
+        }
+      }
+    },
+    "RevisionLabel": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Cloud Run-specific revision template labels (spec.template.metadata.labels).",
+      "properties": {
+        "run.googleapis.com/startupProbeType": {
+          "type": "string",
+          "description": "Google Cloud Run configuration to define the type of startup probe implemented for a container.",
+          "enum": [
+            "Default",
+            "Custom"
+          ]
+        }
+      }
+    },
+    "RevisionAnnotations": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Cloud Run-specific revision template annotations (spec.template.metadata.annotations).",
+      "properties": {
+        "autoscaling.knative.dev/minScale": {
+          "$ref": "#/$defs/IntOrString",
+          "description": "Minimum instances for this revision (autoscaling)."
+        },
+        "autoscaling.knative.dev/maxScale": {
+          "$ref": "#/$defs/IntOrString",
+          "description": "Maximum instances for this revision (autoscaling)."
+        },
+        "run.googleapis.com/cpu-throttling": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "CPU allocation / throttling. 'false' commonly indicates CPU is allocated outside request handling (instance-based billing); 'true' indicates request-based CPU allocation."
+        },
+        "run.googleapis.com/startup-cpu-boost": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "If true, enables startup CPU boost for faster cold starts."
+        },
+        "run.googleapis.com/sessionAffinity": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "If true, enables session affinity."
+        },
+        "run.googleapis.com/cloudsql-instances": {
+          "type": "string",
+          "description": "Comma-separated Cloud SQL instance connection names attached to the revision."
+        },
+        "run.googleapis.com/execution-environment": {
+          "type": "string",
+          "description": "Selects Cloud Run execution environment generation.",
+          "enum": [
+            "gen1",
+            "gen2",
+            "GEN1",
+            "GEN2"
+          ]
+        },
+        "run.googleapis.com/vpc-access-connector": {
+          "type": "string",
+          "description": "Serverless VPC Access connector resource name for the revision."
+        },
+        "run.googleapis.com/vpc-access-egress": {
+          "type": "string",
+          "description": "Egress setting when using Serverless VPC Access.",
+          "enum": [
+            "all-traffic",
+            "private-ranges-only"
+          ]
+        },
+        "run.googleapis.com/network-interfaces": {
+          "type": "string",
+          "description": "JSON string describing VPC network settings for Direct VPC egress / network interfaces."
+        },
+        "run.googleapis.com/encryption-key": {
+          "type": "string",
+          "description": "CMEK resource name used to encrypt resources for the revision."
+        },
+        "run.googleapis.com/custom-audiences": {
+          "type": "string",
+          "description": "JSON string array of custom audiences for the revision. Example: '[\"aud1\",\"aud2\"]'."
+        },
+        "run.googleapis.com/container-dependencies": {
+          "type": "string",
+          "description": "Container start ordering/dependencies (multi-container)."
+        },
+        "run.googleapis.com/base-images": {
+          "type": "string",
+          "description": "JSON string mapping container names to base images (base image tracking)."
+        },
+        "run.googleapis.com/gpu-zonal-redundancy-disabled": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "If true, disables GPU zonal redundancy behavior (where applicable)."
+        }
+      }
+    },
+    "RevisionSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Revision spec for the service (runtime configuration).",
+      "required": [
+        "containers"
+      ],
+      "properties": {
+        "containerConcurrency": {
+          "type": "integer",
+          "description": "Maximum concurrent requests per instance.",
+          "minimum": 0
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "description": "Request timeout in seconds.",
+          "minimum": 1
+        },
+        "nodeSelector": {
+          "type": "object",
+          "description": "Node selector constraints. Cloud Run uses this for accelerators.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "run.googleapis.com/accelerator": {
+              "type": "string",
+              "description": "GPU/accelerator type selector for the revision."
+            }
+          }
+        },
+        "serviceAccountName": {
+          "type": "string",
+          "description": "Service account email used by the revision."
+        },
+        "containers": {
+          "type": "array",
+          "description": "One or more containers (multi-container supported).",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Container"
+          }
+        },
+        "volumes": {
+          "type": "array",
+          "description": "Volumes available to containers.",
+          "items": {
+            "$ref": "#/$defs/Volume"
+          }
+        },
+        "runtimeClassName": {
+          "type": "string",
+          "description": "Runtime class name (used for certain base image update behaviors in Cloud Run YAML reference)."
+        }
+      }
+    },
+    "Container": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Container definition within a revision.",
+      "required": [
+        "image"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/DNSLabel",
+          "description": "Optional container name. Auto-generated if omitted."
+        },
+        "image": {
+          "type": "string",
+          "description": "Container image reference (e.g. Artifact Registry, Docker Hub).",
+          "minLength": 1
+        },
+        "command": {
+          "type": "array",
+          "description": "Entrypoint array (overrides container image entrypoint).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "args": {
+          "type": "array",
+          "description": "Arguments array (overrides container image cmd).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ports": {
+          "type": "array",
+          "description": "Exposed container ports.",
+          "items": {
+            "$ref": "#/$defs/ContainerPort"
+          }
+        },
+        "env": {
+          "type": "array",
+          "description": "Environment variables.",
+          "items": {
+            "$ref": "#/$defs/EnvVar"
+          }
+        },
+        "resources": {
+          "$ref": "#/$defs/ResourceRequirements"
+        },
+        "volumeMounts": {
+          "type": "array",
+          "description": "Volume mounts for the container.",
+          "items": {
+            "$ref": "#/$defs/VolumeMount"
+          }
+        },
+        "startupProbe": {
+          "$ref": "#/$defs/Probe"
+        },
+        "livenessProbe": {
+          "$ref": "#/$defs/Probe"
+        },
+        "readinessProbe": {
+          "$ref": "#/$defs/Probe"
+        }
+      }
+    },
+    "ContainerPort": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Container port mapping.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Port name/protocol hint (e.g. 'http1' or 'h2c')."
+        },
+        "containerPort": {
+          "type": "integer",
+          "description": "Port number exposed by the container.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "EnvVar": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Environment variable definition.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Environment variable name."
+        },
+        "value": {
+          "type": "string",
+          "description": "Environment variable value."
+        }
+      }
+    },
+    "ResourceRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Resource requests/limits (Cloud Run primarily uses limits).",
+      "properties": {
+        "limits": {
+          "type": "object",
+          "description": "Resource limits for the container.",
+          "additionalProperties": false,
+          "properties": {
+            "cpu": {
+              "$ref": "#/$defs/Quantity",
+              "description": "CPU limit (e.g. '1', '2', '1000m')."
+            },
+            "memory": {
+              "$ref": "#/$defs/Quantity",
+              "description": "Memory limit (e.g. '512Mi', '2Gi')."
+            },
+            "nvidia.com/gpu": {
+              "$ref": "#/$defs/IntOrString",
+              "description": "Number of GPUs requested."
+            }
+          }
+        }
+      }
+    },
+    "VolumeMount": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mount a volume into a container filesystem.",
+      "required": [
+        "name",
+        "mountPath"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the volume to mount."
+        },
+        "mountPath": {
+          "type": "string",
+          "description": "Path inside the container where the volume is mounted."
+        }
+      }
+    },
+    "HTTPHeader": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "HTTP header used in probe requests.",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Header name."
+        },
+        "value": {
+          "type": "string",
+          "description": "Header value."
+        }
+      }
+    },
+    "HTTPGetAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "HTTP probe action.",
+      "required": [
+        "port"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "HTTP path to probe."
+        },
+        "port": {
+          "type": "integer",
+          "description": "Port to use for the probe.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "httpHeaders": {
+          "type": "array",
+          "description": "Additional HTTP headers for the probe request.",
+          "items": {
+            "$ref": "#/$defs/HTTPHeader"
+          }
+        }
+      }
+    },
+    "TCPSocketAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "TCP socket probe action.",
+      "required": [
+        "port"
+      ],
+      "properties": {
+        "port": {
+          "type": "integer",
+          "description": "TCP port to probe.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "GRPCAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "gRPC probe action.",
+      "required": [
+        "port"
+      ],
+      "properties": {
+        "service": {
+          "type": "string",
+          "description": "gRPC service name (optional depending on implementation)."
+        },
+        "port": {
+          "type": "integer",
+          "description": "gRPC port to probe.",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "Probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Container health probe (startup/liveness/readiness).",
+      "properties": {
+        "httpGet": {
+          "$ref": "#/$defs/HTTPGetAction"
+        },
+        "tcpSocket": {
+          "$ref": "#/$defs/TCPSocketAction"
+        },
+        "grpc": {
+          "$ref": "#/$defs/GRPCAction"
+        },
+        "initialDelaySeconds": {
+          "type": "integer",
+          "description": "Seconds to wait before starting probes.",
+          "minimum": 0
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "description": "Probe timeout in seconds.",
+          "minimum": 1
+        },
+        "failureThreshold": {
+          "type": "integer",
+          "description": "Number of failures before the probe is considered failed.",
+          "minimum": 1
+        },
+        "successThreshold": {
+          "type": "integer",
+          "description": "Number of successes required for the probe to be considered successful.",
+          "minimum": 1
+        },
+        "periodSeconds": {
+          "type": "integer",
+          "description": "How often (in seconds) to perform the probe.",
+          "minimum": 1
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "httpGet"
+          ]
+        },
+        {
+          "required": [
+            "tcpSocket"
+          ]
+        },
+        {
+          "required": [
+            "grpc"
+          ]
+        }
+      ]
+    },
+    "Volume": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Volume definition. Cloud Run supports secret, emptyDir, CSI (GCS FUSE), and NFS in the v1 YAML reference examples.",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Volume name referenced by container volumeMounts."
+        },
+        "secret": {
+          "$ref": "#/$defs/SecretVolumeSource"
+        },
+        "emptyDir": {
+          "$ref": "#/$defs/EmptyDirVolumeSource"
+        },
+        "csi": {
+          "$ref": "#/$defs/CSIVolumeSource"
+        },
+        "nfs": {
+          "$ref": "#/$defs/NFSVolumeSource"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "secret"
+          ]
+        },
+        {
+          "required": [
+            "emptyDir"
+          ]
+        },
+        {
+          "required": [
+            "csi"
+          ]
+        },
+        {
+          "required": [
+            "nfs"
+          ]
+        }
+      ]
+    },
+    "KeyToPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Maps a secret key/version to a file path within the mounted volume.",
+      "required": [
+        "key",
+        "path"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Secret key (or version identifier in Cloud Run examples)."
+        },
+        "path": {
+          "type": "string",
+          "description": "Relative file path to project the key to."
+        }
+      }
+    },
+    "SecretVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Secret-backed volume source.",
+      "required": [
+        "secretName"
+      ],
+      "properties": {
+        "secretName": {
+          "type": "string",
+          "description": "Name of the secret to mount."
+        },
+        "items": {
+          "type": "array",
+          "description": "Specific secret keys/versions to mount.",
+          "items": {
+            "$ref": "#/$defs/KeyToPath"
+          }
+        }
+      }
+    },
+    "EmptyDirVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "EmptyDir volume source (ephemeral storage).",
+      "properties": {
+        "sizeLimit": {
+          "$ref": "#/$defs/Quantity",
+          "description": "Maximum size for the emptyDir volume."
+        },
+        "medium": {
+          "type": "string",
+          "description": "Storage medium for emptyDir.",
+          "enum": [
+            "Memory",
+            "MEMORY"
+          ]
+        }
+      }
+    },
+    "CSIVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "CSI volume source (e.g. GCS FUSE on Cloud Run).",
+      "required": [
+        "driver"
+      ],
+      "properties": {
+        "driver": {
+          "type": "string",
+          "description": "CSI driver name. Cloud Run GCS FUSE uses 'gcsfuse.run.googleapis.com'."
+        },
+        "readOnly": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "Whether the volume is mounted read-only."
+        },
+        "volumeAttributes": {
+          "type": "object",
+          "description": "Driver-specific attributes (e.g. bucketName, mountOptions).",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "bucketName": {
+              "type": "string",
+              "description": "GCS bucket name for GCS FUSE mounts."
+            },
+            "mountOptions": {
+              "type": "string",
+              "description": "Comma-separated mount options for GCS FUSE."
+            }
+          }
+        }
+      }
+    },
+    "NFSVolumeSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "NFS volume source.",
+      "required": [
+        "server",
+        "path"
+      ],
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "NFS server address."
+        },
+        "path": {
+          "type": "string",
+          "description": "Exported NFS path."
+        },
+        "readonly": {
+          "$ref": "#/$defs/BoolOrString",
+          "description": "Whether the NFS mount is read-only."
+        }
+      }
+    },
+    "TrafficTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Traffic routing target for a service.",
+      "properties": {
+        "percent": {
+          "type": "integer",
+          "description": "Percent of traffic for this target.",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "latestRevision": {
+          "type": "boolean",
+          "description": "If true, routes to the latest ready revision."
+        },
+        "revisionName": {
+          "$ref": "#/$defs/DNSLabel",
+          "description": "Routes traffic to a specific revision by name."
+        },
+        "tag": {
+          "type": "string",
+          "description": "Traffic tag used to create a tagged URL for a revision."
+        }
+      },
+      "allOf": [
+        {
+          "description": "Either 'latestRevision' must be true OR 'revisionName' must be specified.",
+          "oneOf": [
+            {
+              "required": [
+                "latestRevision"
+              ]
+            },
+            {
+              "required": [
+                "revisionName"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
